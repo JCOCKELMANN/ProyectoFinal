@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mundial en vivo | Partidos, hoteles y vuelos</title>
+    <link rel="preconnect" href="https://raw.githubusercontent.com" />
+    <link rel="preconnect" href="https://nominatim.openstreetmap.org" />
+    <link rel="preconnect" href="https://overpass-api.de" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar" aria-label="Navegación principal">
+        <span class="brand">🌎 Mundial Planner</span>
+        <a href="#configuracion">Configurar viaje</a>
+      </nav>
+
+      <section class="hero-content">
+        <p class="eyebrow">Datos dinámicos desde Internet</p>
+        <h1>Elige un partido del Mundial y planifica hoteles y vuelo en segundos.</h1>
+        <p>
+          La cartelera se carga desde una fuente JSON pública, los alojamientos cercanos se consultan
+          en OpenStreetMap/Overpass y los enlaces de vuelo se generan en tiempo real según tu origen.
+        </p>
+      </section>
+    </header>
+
+    <main>
+      <section id="configuracion" class="panel search-panel" aria-labelledby="config-title">
+        <div>
+          <p class="eyebrow">Tu punto de salida</p>
+          <h2 id="config-title">Configura desde dónde viajas</h2>
+          <p class="muted">
+            No guardamos esta información en servidores. Se usa solo en tu navegador para armar las
+            búsquedas dinámicas de vuelos.
+          </p>
+        </div>
+
+        <form id="travel-form" class="travel-form">
+          <label>
+            País o ciudad de origen
+            <input id="origin" name="origin" type="text" placeholder="Ej. Santo Domingo, República Dominicana" required />
+          </label>
+          <label>
+            Aeropuerto de salida (opcional)
+            <input id="origin-airport" name="originAirport" type="text" maxlength="3" placeholder="Ej. SDQ" />
+          </label>
+          <label>
+            Personas
+            <input id="passengers" name="passengers" type="number" min="1" max="9" value="1" />
+          </label>
+          <button type="submit">Guardar preferencias</button>
+        </form>
+      </section>
+
+      <section class="status-card" aria-live="polite">
+        <div>
+          <strong id="status-title">Cargando partidos…</strong>
+          <p id="status-message">Conectando con la fuente pública de calendario del Mundial.</p>
+        </div>
+        <button id="reload-btn" type="button">Actualizar ahora</button>
+      </section>
+
+      <section class="layout">
+        <aside class="filters panel" aria-labelledby="filters-title">
+          <h2 id="filters-title">Filtrar partidos</h2>
+          <label>
+            Buscar equipo, ciudad o estadio
+            <input id="search" type="search" placeholder="Ej. México, Toronto, final…" />
+          </label>
+          <label>
+            País anfitrión
+            <select id="country-filter">
+              <option value="">Todos</option>
+            </select>
+          </label>
+          <label>
+            Ordenar por
+            <select id="sort-filter">
+              <option value="date">Fecha y hora</option>
+              <option value="city">Ciudad</option>
+              <option value="country">País</option>
+            </select>
+          </label>
+          <p class="hint">
+            Importante: no hay partidos escritos manualmente en el código; si la fuente cambia, la app se actualiza al recargar.
+          </p>
+        </aside>
+
+        <section class="matches" aria-labelledby="matches-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Calendario</p>
+              <h2 id="matches-title">Partidos disponibles</h2>
+            </div>
+            <span id="match-count" class="pill">0 partidos</span>
+          </div>
+          <div id="matches-list" class="match-grid"></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="details-dialog" class="details-dialog">
+      <button id="close-dialog" class="icon-button" type="button" aria-label="Cerrar">×</button>
+      <article id="details-content"></article>
+    </dialog>
+
+    <template id="match-card-template">
+      <button class="match-card" type="button">
+        <span class="match-date"></span>
+        <strong class="match-title"></strong>
+        <span class="match-meta"></span>
+        <span class="match-venue"></span>
+      </button>
+    </template>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
