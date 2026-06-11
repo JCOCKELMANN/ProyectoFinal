@@ -3,118 +3,138 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mundial en vivo | Partidos, hoteles y vuelos</title>
+    <title>Logio | Mundial</title>
     <link rel="preconnect" href="https://raw.githubusercontent.com" />
-    <link rel="preconnect" href="https://nominatim.openstreetmap.org" />
-    <link rel="preconnect" href="https://overpass-api.de" />
+    <link rel="preconnect" href="https://flagcdn.com" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="hero">
-      <nav class="topbar" aria-label="Navegación principal">
-        <span class="brand">🌎 Mundial Planner</span>
-        <a href="#configuracion">Configurar viaje</a>
-      </nav>
+    <header class="site-header">
+      <nav class="topbar" aria-label="Navegacion principal">
+        <a class="brand" href="#inicio" data-route="home" aria-label="Ir al inicio">
+          <span class="brand-ball" aria-hidden="true">LOG</span>
+          <span>Logio</span>
+        </a>
 
-      <section class="hero-content">
-        <p class="eyebrow">Datos dinámicos desde Internet</p>
-        <h1>Elige un partido del Mundial y planifica hoteles y vuelo en segundos.</h1>
-        <p>
-          La cartelera se carga desde una fuente JSON pública, los alojamientos cercanos se consultan
-          en OpenStreetMap/Overpass y los enlaces de vuelo se generan en tiempo real según tu origen.
-        </p>
-      </section>
+        <div class="nav-links">
+          <a class="nav-link is-active" href="#inicio" data-route="home">Inicio</a>
+          <a class="nav-link" href="#partidos" data-route="calendar">Partidos</a>
+          <a class="nav-link" href="#estadios" data-route="calendar">Estadios</a>
+          <a class="nav-link" href="#vuelos" data-route="calendar">Vuelos</a>
+          <a class="nav-link" href="#hoteles" data-route="calendar">Hoteles</a>
+          <a class="nav-link" href="#noticias" data-route="home">Noticias</a>
+        </div>
+
+        <form class="header-search" role="search">
+          <input id="search" type="search" placeholder="Buscar..." aria-label="Buscar partidos" />
+          <button type="submit" aria-label="Buscar">Go</button>
+        </form>
+      </nav>
     </header>
 
     <main>
-      <section id="configuracion" class="panel search-panel" aria-labelledby="config-title">
-        <div>
-          <p class="eyebrow">Tu punto de salida</p>
-          <h2 id="config-title">Configura desde dónde viajas</h2>
-          <p class="muted">
-            No guardamos esta información en servidores. Se usa solo en tu navegador para armar las
-            búsquedas dinámicas de vuelos.
-          </p>
-        </div>
+      <section id="home-view" class="view is-visible">
+        <section id="home-hero" class="home-hero">
+          <div class="home-hero-inner">
+            <h1>Todo sobre el Mundial</h1>
+            <p>Resultados, Partidos y Viajes</p>
 
-        <form id="travel-form" class="travel-form">
-          <label>
-            País o ciudad de origen
-            <input id="origin" name="origin" type="text" placeholder="Ej. Santo Domingo, República Dominicana" required />
-          </label>
-          <label>
-            Aeropuerto de salida (opcional)
-            <input id="origin-airport" name="originAirport" type="text" maxlength="3" placeholder="Ej. SDQ" />
-          </label>
-          <label>
-            Personas
-            <input id="passengers" name="passengers" type="number" min="1" max="9" value="1" />
-          </label>
-          <button type="submit">Guardar preferencias</button>
-        </form>
-      </section>
+            <article id="hero-match" class="scoreboard" aria-live="polite"></article>
 
-      <section class="status-card" aria-live="polite">
-        <div>
-          <strong id="status-title">Cargando partidos…</strong>
-          <p id="status-message">Conectando con la fuente pública de calendario del Mundial.</p>
-        </div>
-        <button id="reload-btn" type="button">Actualizar ahora</button>
-      </section>
-
-      <section class="layout">
-        <aside class="filters panel" aria-labelledby="filters-title">
-          <h2 id="filters-title">Filtrar partidos</h2>
-          <label>
-            Buscar equipo, ciudad o estadio
-            <input id="search" type="search" placeholder="Ej. México, Toronto, final…" />
-          </label>
-          <label>
-            País anfitrión
-            <select id="country-filter">
-              <option value="">Todos</option>
-            </select>
-          </label>
-          <label>
-            Ordenar por
-            <select id="sort-filter">
-              <option value="date">Fecha y hora</option>
-              <option value="city">Ciudad</option>
-              <option value="country">País</option>
-            </select>
-          </label>
-          <p class="hint">
-            Importante: no hay partidos escritos manualmente en el código; si la fuente cambia, la app se actualiza al recargar.
-          </p>
-        </aside>
-
-        <section class="matches" aria-labelledby="matches-title">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Calendario</p>
-              <h2 id="matches-title">Partidos disponibles</h2>
-            </div>
-            <span id="match-count" class="pill">0 partidos</span>
+            <button class="primary-cta" type="button" data-route="calendar">Ver Calendario Completo</button>
           </div>
-          <div id="matches-list" class="match-grid"></div>
         </section>
+
+        <section class="home-grid">
+          <article class="home-panel upcoming-panel">
+            <h2>Proximos Partidos</h2>
+            <div id="home-matches" class="mini-match-list"></div>
+            <button class="red-cta" type="button" data-route="calendar">Ver Todos los Partidos</button>
+          </article>
+
+          <article class="home-panel stadium-panel">
+            <h2>Estadios</h2>
+            <div id="stadium-cards" class="stadium-cards"></div>
+          </article>
+
+          <article class="home-panel news-panel">
+            <h2>Noticias del Mundial</h2>
+            <a href="#noticia">Favoritos para ganar el mundial</a>
+            <a href="#noticia">Lesiones y bajas importantes</a>
+            <button class="green-cta" type="button">Mas Noticias</button>
+          </article>
+        </section>
+      </section>
+
+      <section id="calendar-view" class="view">
+        <section class="page-title">
+          <h1>Calendario de Partidos</h1>
+        </section>
+
+        <section class="filters" aria-label="Filtros del calendario">
+          <select id="group-filter" aria-label="Grupo">
+            <option value="">Grupo</option>
+          </select>
+          <select id="sort-filter" aria-label="Fecha">
+            <option value="date">Fecha</option>
+            <option value="city">Ciudad</option>
+            <option value="stadium">Estadio</option>
+          </select>
+          <select id="country-filter" aria-label="Seleccionar Pais">
+            <option value="">Seleccionar Pais</option>
+          </select>
+        </section>
+
+        <section class="status-row" aria-live="polite">
+          <span id="status-title">Cargando partidos...</span>
+          <button id="reload-btn" type="button">Actualizar</button>
+        </section>
+
+        <section class="table-wrap">
+          <table class="match-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Partido</th>
+                <th>Hora</th>
+                <th>Estadio</th>
+                <th>Ciudad</th>
+              </tr>
+            </thead>
+            <tbody id="matches-list"></tbody>
+          </table>
+        </section>
+
+        <nav id="pagination" class="pagination" aria-label="Paginacion">
+          <button type="button" disabled>&lt; Anterior</button>
+          <button class="is-current" type="button">1</button>
+          <button type="button" disabled>Siguiente &gt;</button>
+        </nav>
+      </section>
+
+      <section id="detail-view" class="view">
+        <section class="detail-title">
+          <h1>Detalle del Partido</h1>
+        </section>
+
+        <article id="details-content" class="match-detail"></article>
+
+        <div class="back-row">
+          <button class="green-cta" type="button" data-route="calendar">Volver al Calendario</button>
+        </div>
       </section>
     </main>
 
-    <dialog id="details-dialog" class="details-dialog">
-      <button id="close-dialog" class="icon-button" type="button" aria-label="Cerrar">×</button>
-      <article id="details-content"></article>
-    </dialog>
-
-    <template id="match-card-template">
-      <button class="match-card" type="button">
-        <span class="match-date"></span>
-        <strong class="match-title"></strong>
-        <span class="match-meta"></span>
-        <span class="match-venue"></span>
-      </button>
+    <template id="match-row-template">
+      <tr>
+        <td class="match-date"></td>
+        <td class="match-title"></td>
+        <td class="match-time"></td>
+        <td class="match-venue"></td>
+        <td><button class="row-action" type="button">Ver Vuelos y Hoteles</button></td>
+      </tr>
     </template>
 
-    <script src="app.js" type="module"></script>
+    <script src="app.js"></script>
   </body>
 </html>
