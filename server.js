@@ -202,7 +202,11 @@ async function serveStatic(pathname, response) {
   try {
     const file = await fs.readFile(filePath);
     const contentType = MIME_TYPES[path.extname(filePath)] || "application/octet-stream";
-    response.writeHead(200, { "Content-Type": contentType });
+    const headers = { "Content-Type": contentType };
+    if ([".html", ".css", ".js"].includes(path.extname(filePath))) {
+      headers["Cache-Control"] = "no-store";
+    }
+    response.writeHead(200, headers);
     response.end(file);
   } catch (error) {
     sendText(response, "Not found", 404);

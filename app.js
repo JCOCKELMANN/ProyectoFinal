@@ -413,7 +413,7 @@ function renderHome() {
   const featuredMatch = nextMatches[0] || state.matches[0];
 
   renderHeroMatch(featuredMatch);
-  renderHomeMatches(nextMatches.slice(0, 3));
+  renderHomeMatches(nextMatches.slice(0, 4));
   renderStadiumCards(nextMatches.length ? nextMatches : state.matches);
 
   if (featuredMatch) {
@@ -455,16 +455,35 @@ function renderHeroMatch(match) {
 }
 
 function renderHomeMatches(matches) {
+  if (!elements.homeMatches) return;
+
   elements.homeMatches.innerHTML = matches.map((match) => `
-    <article class="mini-match">
-      <span>${escapeHtml(formatShortDate(match))}</span>
-      <span>${renderFlag(match.team1Code, match.team1)} ${escapeHtml(match.team1)} vs ${renderFlag(match.team2Code, match.team2)} ${escapeHtml(match.team2)}</span>
-      <span>${escapeHtml(match.time || "00:00")}</span>
-    </article>
+    <button class="mini-match" type="button" data-match-id="${escapeHtml(match.id)}">
+      <img class="mini-match-image" src="${match.venue.image}" alt="${escapeHtml(match.venue.name)}" loading="lazy" />
+      <span class="mini-match-content">
+        <strong class="mini-match-teams">
+          <span>${renderFlag(match.team1Code, match.team1)} ${escapeHtml(match.team1)}</span>
+          <small>vs</small>
+          <span>${renderFlag(match.team2Code, match.team2)} ${escapeHtml(match.team2)}</span>
+        </strong>
+        <span class="mini-match-meta">${escapeHtml(formatShortDate(match))} | ${escapeHtml(match.time || "Por definir")}</span>
+        <span class="mini-match-venue">${escapeHtml(match.venue.name)}</span>
+      </span>
+    </button>
   `).join("");
+
+  elements.homeMatches.querySelectorAll(".mini-match").forEach((card) => {
+    card.addEventListener("click", () => {
+      const match = matches.find((item) => String(item.id) === card.dataset.matchId);
+      if (match) openDetails(match);
+    });
+  });
 }
 
 function renderStadiumCards(matches) {
+  // La seccion de estadios es opcional; puede eliminarse del HTML sin romper la app.
+  if (!elements.stadiumCards) return;
+
   const uniqueVenues = [];
   const seen = new Set();
 
@@ -770,6 +789,7 @@ function buildHotelImageUrl(hotel, city) {
 }
 
 function setElementBackground(element, imageUrl) {
+  if (!element) return;
   element.style.backgroundImage = `linear-gradient(rgba(4, 31, 72, 0.25), rgba(4, 31, 72, 0.08)), url('${imageUrl}')`;
 }
 

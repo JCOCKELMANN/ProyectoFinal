@@ -77,17 +77,11 @@ img {
   white-space: nowrap;
 }
 
-.brand-ball {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--white);
-  box-shadow: inset 0 0 0 2px #123;
-  color: #063b7c;
-  font-size: 13px;
-  font-weight: 900;
+.brand-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.38));
 }
 
 .nav-links {
@@ -288,56 +282,100 @@ main {
 
 .home-grid {
   width: min(1220px, calc(100% - 40px));
-  margin: 14px auto 36px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.05fr;
-  gap: 8px;
+  margin: 24px auto 36px;
 }
 
 .home-panel {
   min-height: 250px;
-  padding: 14px;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.74)),
-    url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=900&q=80") center/cover;
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  padding: 0;
+  background: transparent;
 }
 
 .home-panel h2 {
-  margin: 0 0 12px;
+  margin: 0 0 18px;
   color: #063b7c;
-  font-size: 25px;
+  font-size: 28px;
   text-align: center;
 }
 
 .mini-match-list {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
 }
 
 .mini-match {
+  min-width: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: 76px 1fr 72px;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.92);
+  grid-template-rows: 165px 1fr;
+  overflow: hidden;
+  border: 1px solid #c9d7e1;
+  border-radius: 0;
+  background: var(--white);
   color: #073b76;
-  font-weight: 900;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 3px 10px rgba(22, 36, 51, 0.25);
+  text-align: center;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
-.mini-match span:nth-child(2) {
+.mini-match:hover,
+.mini-match:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(22, 36, 51, 0.3);
+}
+
+.mini-match-image {
+  width: 100%;
+  height: 165px;
+  object-fit: cover;
+}
+
+.mini-match-content {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 12px;
+}
+
+.mini-match-teams {
+  display: grid;
+  gap: 7px;
+  color: #102d55;
+  font-size: 16px;
+}
+
+.mini-match-teams > span {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  flex-wrap: wrap;
+}
+
+.mini-match-teams small {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.mini-match-meta {
+  color: #063b7c;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.mini-match-venue {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .mini-match .flag-img {
-  width: 32px;
-  height: 22px;
+  width: 34px;
+  height: 23px;
 }
 
 .red-cta,
@@ -352,7 +390,7 @@ main {
 .red-cta {
   display: block;
   width: min(280px, 100%);
-  margin: 18px auto 0;
+  margin: 26px auto 0;
   padding: 13px 18px;
   background: linear-gradient(#df1c18, #900805);
   font-size: 18px;
@@ -799,6 +837,10 @@ main {
     grid-template-columns: 1fr;
   }
 
+  .mini-match-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .scoreboard {
     grid-template-columns: 1fr;
     background: linear-gradient(135deg, #053986, #0964c5 55%, #063b83);
@@ -814,10 +856,9 @@ main {
     font-size: 20px;
   }
 
-  .brand-ball {
-    width: 36px;
-    height: 36px;
-    font-size: 23px;
+  .brand-logo {
+    width: 42px;
+    height: 42px;
   }
 
   .home-grid,
@@ -838,6 +879,10 @@ main {
   }
 
   .stadium-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-match-list {
     grid-template-columns: 1fr;
   }
 
