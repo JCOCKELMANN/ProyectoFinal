@@ -355,8 +355,21 @@ function inferCountry(city = "") {
 
 function buildKickoff(date, time) {
   if (!date) return null;
-  const normalizedTime = time ? String(time).padStart(5, "0") : "00:00";
-  const parsed = new Date(`${date}T${normalizedTime}:00`);
+
+  const timeValue = String(time || "00:00").trim();
+  const timeMatch = timeValue.match(/(\d{1,2}):(\d{2})/);
+  const offsetMatch = timeValue.match(/UTC([+-]\d{1,2})(?::(\d{2}))?/i);
+  const hours = timeMatch ? Number(timeMatch[1]) : 0;
+  const minutes = timeMatch ? Number(timeMatch[2]) : 0;
+
+  if (offsetMatch) {
+    const offsetHours = Number(offsetMatch[1]);
+    const offsetMinutes = Number(offsetMatch[2] || 0) * Math.sign(offsetHours);
+    const localAsUtc = Date.parse(`${date}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00Z`);
+    return new Date(localAsUtc - ((offsetHours * 60) + offsetMinutes) * 60_000);
+  }
+
+  const parsed = new Date(`${date}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
@@ -424,7 +437,10 @@ function renderHome() {
 function getUpcomingMatches() {
   const now = new Date();
   const upcoming = state.matches.filter((match) => match.kickoff && match.kickoff >= now);
-  return upcoming.length ? upcoming : state.matches;
+  if (upcoming.length) return upcoming;
+
+  // Si el calendario ya termino, muestra primero el partido jugado mas recientemente.
+  return [...state.matches].sort((a, b) => (b.kickoff?.getTime() || 0) - (a.kickoff?.getTime() || 0));
 }
 
 function renderHeroMatch(match) {
