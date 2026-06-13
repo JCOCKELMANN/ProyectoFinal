@@ -1,4 +1,4 @@
-# Logio Mundial
+#  Mundial
 
 Aplicacion web en HTML, CSS y JavaScript para consultar partidos del Mundial 2026 y planificar vuelos/hoteles desde Guatemala.
 
